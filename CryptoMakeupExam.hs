@@ -2,6 +2,7 @@
 {-# LANGUAGE TupleSections	#-}
 {-# LANGUAGE ViewPatterns	#-}
 
+import Control.Applicative (liftA2)
 import Control.Arrow ((***), (&&&))
 import Control.Monad (forM)
 import Data.List (genericReplicate, genericTake)
@@ -18,11 +19,10 @@ modularPow e m b = if odd e then mult result b else result
 		result = modularPow (e `div` 2) m (mult b b)
 		mult x y = (x*y) `mod` m
 
-millerRabin :: (Enum a, Num a, Integral b, Random b) => a -> b -> IO Bool
-millerRabin k n
-	| n > 3 && odd n = and <$> forM [1..k] (const witness)
-	| otherwise = return False
+millerRabin :: (Integral a, Integral b, Random b) => a -> b -> IO Bool
+millerRabin k n = foldl1 (liftA2 (&&)) $ baseCondition : genericReplicate k witness
 	where
+		baseCondition = return $ n > 3 && odd n && k > 0
 		repeatSquares' = (. iterate (\x -> (x^2) `mod` n)) . genericTake
 		witness' d = test . modularPow d n <$> randomRIO (2,n-2)
 		(repeatSquares, witness) = (repeatSquares' *** witness') $ factorOddPowers $ n-1
@@ -39,12 +39,10 @@ pollardRho p n
 		g = flip mod n . eval p
 		xs = tail $ iterate g 2
 		ys = tail $ iterate (g . g) 2
-		d:_ = dropWhile (==1) $ zipWith (\x -> gcd n . (x-)) xs ys
+		d = head $ dropWhile (==1) $ zipWith ((gcd n .) . (-)) xs ys
 
 main = do
-	putStrLn "2.10-14:"
-	let eP = EllipticCurve 1 7 :: EllipticCurve Integer 11
-	print $ tail $ scanl1 (~+) $ replicate 13 $ (Point eP 3 2)
+	q2
 
 	let q3Integers = [31531, 520482, 485827, 15485863] :: [Integer]
 	putStrLn "3a:"
@@ -61,4 +59,22 @@ main = do
 	forM q3Integers $ \n -> do
 		putStr $ show n
 		let putativeFactor = pollardRho (x^2+1) n
-		putStrLn $ maybe " has no factors" (\f -> " has " ++ show f ++ " as a factor") putativeFactor 
+		putStrLn $ maybe " has no factors" (\f -> " has " ++ show f ++ " as a factor") putativeFactor
+
+q2 :: IO ()
+q2 = do
+	let e1 = EllipticCurve 2 1 :: EllipticCurve Integer 7
+	let e2 = EllipticCurve 1 7 :: EllipticCurve Integer 11
+	let g = Point e2 3 2
+	putStrLn "2.10-14:"
+	print $ tail $ scanl1 (~+) $ replicate 13 g
+
+	putStrLn "2.10.15a"
+	let pB = 7 ~* g
+	print pB
+
+	putStrLn "2.10.15b"
+	let k = 5
+	let nB = 7
+	let pM = Point e2 10 7
+	print $ encrypt g k nB pM

@@ -43,3 +43,6 @@ infixr 7 ~*
 n ~* p
 	| odd n = p ~+ (n-1) ~* p
 	| otherwise = (n `div` 2) ~* 2 ~* p
+
+encrypt :: ValidMod n p => Point n p -> n -> n -> Point n p -> (Point n p, Point n p)
+encrypt g k nb pm = (k ~* g, pm ~+ (k*nb) ~* g)
