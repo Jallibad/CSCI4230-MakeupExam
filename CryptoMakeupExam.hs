@@ -1,6 +1,7 @@
-{-# LANGUAGE DataKinds		#-}
-{-# LANGUAGE TupleSections	#-}
-{-# LANGUAGE ViewPatterns	#-}
+{-# LANGUAGE DataKinds			#-}
+{-# LANGUAGE FlexibleContexts	#-}
+{-# LANGUAGE TupleSections		#-}
+{-# LANGUAGE ViewPatterns		#-}
 
 import Control.Applicative (liftA2)
 import Control.Arrow ((***), (&&&))
@@ -78,3 +79,5 @@ q2 = do
 	let nB = 7
 	let pM = Point e2 10 7
 	print $ encrypt g k nB pM
+
+type ECC p = EllipticCurve Integer p

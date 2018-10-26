@@ -35,6 +35,13 @@ p@(Point curvep xp yp) ~+ q@(Point curveq xq yq) = Point curvep xr yr
 		xr = m^2-xp-xq
 		yr = m*(xp-xr)-yp
 
+negate :: ValidMod n p => Point n p -> Point n p
+negate (Point curve x y) = Point curve x $ Prelude.negate y
+
+infixl 6 ~-
+(~-) :: ValidMod n p => Point n p -> Point n p -> Point n p
+p ~- q = p ~+ EllipticCurve.negate q
+
 infixr 7 ~*
 (~*) :: ValidMod n p => n -> Point n p -> Point n p
 0 ~* (Point curve _ _) = Point curve 0 0
