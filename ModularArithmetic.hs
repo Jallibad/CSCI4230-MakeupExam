@@ -1,6 +1,7 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeApplications, KindSignatures, ScopedTypeVariables #-}
+{-# LANGUAGE ViewPatterns	#-}
 
 module ModularArithmetic where
 
@@ -49,9 +50,8 @@ instance (Ord a, ValidMod a m) => Real (Mod a m) where
 	toRational = toRational . toInteger . unMod
 
 instance ValidMod a m => Integral (Mod a m) where
-	quotRem a b = case modInverse b of
-		(Just i) -> (a*i, 0)
-		_ -> error "No multiplicative inverse in current modulus"
+	quotRem a (modInverse -> Just b)	= (a*b, 0)
+	quotRem a _							= (0, a)
 	toInteger = toInteger . unMod
 
 modInverse :: forall a m. ValidMod a m => Mod a m -> Maybe (Mod a m)
@@ -70,3 +70,4 @@ instance ValidMod a m => Bounded (Mod a m) where
 
 quadraticResidue :: ValidMod a m => Mod a m -> [Mod a m]
 quadraticResidue n = filter ((==n) . (^2)) [0..maxBound]
+--	where modulus = natVal $ Proxy @m

@@ -30,11 +30,11 @@ slope (Point curve1 x1 y1) (Point curve2 x2 y2)
 	| x1 == x2 = (3*x1^2+(_a curve1)) `div` (2*y1)
 	| otherwise = (y1-y2) `div` (x1-x2)
 
-evalCurve :: ValidMod n p => EllipticCurve n p -> Mod n p -> Mod n p
-evalCurve (EllipticCurve a b) x0 = isqrt $ x0^3+a*x0+b
+evalCurve :: ValidMod n p => EllipticCurve n p -> Mod n p -> Set (Mod n p)
+evalCurve (EllipticCurve a b) x0 = Set.fromList $ quadraticResidue $ x0^3+a*x0+b
 
 pointsOnCurve :: ValidMod n p => EllipticCurve n p -> Set (Point n p)
-pointsOnCurve c = Set.map (\x -> Point c x $ evalCurve c x) $ Set.fromList [0..maxBound]
+pointsOnCurve c = Set.unions $ map (\x -> Set.map (Point c x) $ evalCurve c x) [0..maxBound]
 
 infixl 6 ~+
 (~+) :: ValidMod n p => Point n p -> Point n p -> Point n p
