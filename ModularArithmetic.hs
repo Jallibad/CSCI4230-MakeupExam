@@ -67,3 +67,6 @@ modInverse a
 instance ValidMod a m => Bounded (Mod a m) where
 	minBound = 0
 	maxBound = 0-1
+
+quadraticResidue :: ValidMod a m => Mod a m -> [Mod a m]
+quadraticResidue n = filter ((==n) . (^2)) [0..maxBound]

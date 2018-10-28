@@ -1,6 +1,9 @@
 module EllipticCurve where
 
 import Data.List (genericReplicate)
+import Data.Ord (comparing)
+import Data.Set (Set)
+import qualified Data.Set as Set
 import MathFunctions (isqrt)
 import ModularArithmetic
 
@@ -13,7 +16,10 @@ instance (Show n, ValidMod n p) => Show (EllipticCurve n p) where
 				| t >= 0 = "+" ++ (show $ unMod t)
 				| otherwise = "-" ++ (show $ unMod t)
 
-data Point n p = Point {_curve :: EllipticCurve n p, _x :: Mod n p, _y :: Mod n p}
+data Point n p = Point {_curve :: EllipticCurve n p, _x :: Mod n p, _y :: Mod n p} deriving (Eq)
+
+instance Ord n => Ord (Point n p) where
+	compare = comparing (\(Point _ x y) -> (x,y))
 
 instance Show n => Show (Point n p) where
 	show (Point _ x y) = show (x,y)
@@ -26,6 +32,9 @@ slope (Point curve1 x1 y1) (Point curve2 x2 y2)
 
 evalCurve :: ValidMod n p => EllipticCurve n p -> Mod n p -> Mod n p
 evalCurve (EllipticCurve a b) x0 = isqrt $ x0^3+a*x0+b
+
+pointsOnCurve :: ValidMod n p => EllipticCurve n p -> Set (Point n p)
+pointsOnCurve c = Set.map (\x -> Point c x $ evalCurve c x) $ Set.fromList [0..maxBound]
 
 infixl 6 ~+
 (~+) :: ValidMod n p => Point n p -> Point n p -> Point n p
