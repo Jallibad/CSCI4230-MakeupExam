@@ -6,7 +6,6 @@ import Control.Arrow (first)
 import Data.Function (on)
 import qualified Data.Map.Strict as Map
 import Control.Lens
-import Debug.Trace
 
 newtype Polynomial a b = Polynomial (Map.Map a b) deriving Eq
 

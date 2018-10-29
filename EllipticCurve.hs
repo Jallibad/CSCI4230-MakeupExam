@@ -4,7 +4,6 @@ import Data.List (genericReplicate)
 import Data.Ord (comparing)
 import Data.Set (Set)
 import qualified Data.Set as Set
-import MathFunctions (isqrt)
 import ModularArithmetic
 
 data EllipticCurve n p = EllipticCurve {_a :: Mod n p, _b :: Mod n p} deriving (Eq)

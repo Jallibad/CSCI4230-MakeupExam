@@ -1,8 +1,8 @@
 # CSCI4230-MakeupExam
-##Question 1:
+## Question 1:
 
 
-##Question 2:
+## Question 2:
 My writeup of the answers can be found in "Q2.pdf".  The following Haskell functions will produce the same answers:
 
 10-12:	`pointsOnCurve (EllipticCurve 1 6 :: ECC 11)`
@@ -13,7 +13,7 @@ My writeup of the answers can be found in "Q2.pdf".  The following Haskell funct
 
 10-15B: `let e = EllipticCurve 1 6 :: ECC 11 in encrypt (Point e 2 7) 5 7 (Point e 10 7)`
 
-##Question 3:
+## Question 3:
 My code for part A and B is in "CryptoMakeupExam.hs", compiling that and running the main function will give the output:
 ```
 3a:

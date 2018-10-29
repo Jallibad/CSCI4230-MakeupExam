@@ -11,7 +11,6 @@ import Data.Function (on)
 import Data.Proxy (Proxy (..))
 import Data.Ratio ((%))
 import GHC.TypeLits (Nat, natVal, KnownNat)
-import ListFunctions (diffs, takeUntil)
 
 newtype Mod a (m :: Nat) = Mod a deriving (Eq, Ord)
 type ValidMod a m = (Integral a, KnownNat m)
@@ -53,6 +52,10 @@ instance ValidMod a m => Integral (Mod a m) where
 	quotRem a (modInverse -> Just b)	= (a*b, 0)
 	quotRem a _							= (0, a)
 	toInteger = toInteger . unMod
+
+diffs _ [] = []
+diffs _ (_:[]) = []
+diffs f (x:y:xs) = (f x y) : diffs f (y:xs)
 
 modInverse :: forall a m. ValidMod a m => Mod a m -> Maybe (Mod a m)
 modInverse a
